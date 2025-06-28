@@ -116,11 +116,11 @@ def setup_build_directories(base_path: pathlib.Path) -> dict[str, pathlib.Path]:
         "specifications": base_path / "variants" / "specifications",
         "build_temp": base_path / "build_temp",
     }
-    
+
     # Create all directories
     for directory_path in directory_structure.values():
         directory_path.mkdir(parents=True, exist_ok=True)
-    
+
     return directory_structure
 
 
