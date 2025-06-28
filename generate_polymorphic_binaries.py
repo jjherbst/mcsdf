@@ -41,7 +41,6 @@ Polymorphic variant executable - Educational/Research purposes only.
 This executable demonstrates benign polymorphic variance techniques.
 """
 import base64
-import csv
 import hashlib
 
 # Encrypted EICAR signature and decryption key
@@ -57,12 +56,6 @@ decrypted_eicar = bytes(
 # Generate consistent checksum for benign payload
 payload_checksum = hashlib.sha256(b"benign").hexdigest()
 
-# Write checksum to output file
-with open("checksum.csv", "w", newline="", encoding="utf-8") as output_file:
-    csv_writer = csv.writer(output_file)
-    csv_writer.writerow(["payload_type", "checksum"])
-    csv_writer.writerow(["benign", payload_checksum])
-
 print(f"Generated checksum: {{payload_checksum}}")
 print("Polymorphic variant executed successfully.")
 '''
@@ -71,7 +64,7 @@ def generate_xor_encrypted_eicar() -> tuple[str, int]:
     """
     Generate an XOR-encrypted version of the EICAR test signature.
     
-    Returns:
+    returns:
         tuple: A tuple containing:
             - Base64-encoded encrypted EICAR signature (str)
             - XOR encryption key used (int)
@@ -87,11 +80,11 @@ def create_polymorphic_source_code(encrypted_blob: str, xor_key: int) -> str:
     """
     Create the Python source code for a polymorphic variant.
     
-    Args:
+    arguments:
         encrypted_blob: Base64-encoded encrypted EICAR signature
         xor_key: XOR decryption key for the EICAR signature
         
-    Returns:
+    returns:
         str: Complete Python source code for the variant
     """
     return POLYMORPHIC_VARIANT_TEMPLATE.format(
@@ -104,10 +97,10 @@ def setup_build_directories(base_path: pathlib.Path) -> dict[str, pathlib.Path]:
     """
     Create and return the directory structure for building variants.
     
-    Args:
+    arguments:
         base_path: Base directory path for the build structure
         
-    Returns:
+    returns:
         dict[str, pathlib.Path]: Dictionary containing paths for different build components
     """
     directory_structure = {
@@ -130,7 +123,7 @@ def compile_variant_to_executable(source_file_path: pathlib.Path,
     """
     Compile a Python source file into a standalone executable using PyInstaller.
     
-    Args:
+    arguments:
         source_file_path: Path to the Python source file
         variant_index: Index number of the variant being built
         build_dirs: Dictionary containing build directory paths
@@ -166,7 +159,7 @@ def build_single_polymorphic_variant(variant_index: int,
     2. Creating Python source code with the encrypted payload
     3. Compiling the source code into a standalone executable
     
-    Args:
+    arguments:
         variant_index: Unique identifier/index for this variant
         build_directories: Dictionary containing paths for build components
     """
@@ -191,7 +184,7 @@ def parse_command_line_arguments() -> argparse.Namespace:
     """
     Parse and validate command line arguments.
     
-    Returns:
+    returns:
         argparse.Namespace: Parsed command line arguments
     """
     argument_parser = argparse.ArgumentParser(
@@ -214,7 +207,7 @@ def parse_command_line_arguments() -> argparse.Namespace:
         help="Custom output directory for generated files (default: auto-generated)"
     )
     
-    return argument_parser.parse_args()
+    return argument_parser.parse_arguments()
 
 
 def main() -> None:

@@ -25,7 +25,7 @@ def main():
 
     try:
         create_eicar_file(eicar_file)
-        trigger_av_scan(eicar_file)
+        trigger_av_scan(eicar_file)     # force file to open to trigger AV scan.
 
     except OSError as exception:
         logging.error("Unexpected error: %s", exception)
