@@ -1,0 +1,7 @@
+*.pdf
+bin/malware_report.exe
+bin/static_malware_trigger.exe
+bin/*.pdf
+bin/static_malware_trigger_extracted
+build/
+spec/
