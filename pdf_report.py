@@ -1,10 +1,9 @@
 from fpdf import FPDF
 import datetime
 
-
-class malware_pdf_report(FPDF):
+class pdf_report(FPDF):
     """
-    malware_pdf_report is a subclass of FPDF designed to generate structured PDF reports for static malware analysis.
+    pdf_report is a subclass of FPDF designed to generate structured PDF reports for static malware analysis.
     Features:
         - Custom headers and footers with academic/research branding.
         - Section titles and optional subtitles for report organization.

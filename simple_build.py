@@ -27,15 +27,15 @@ def build_exe(script_name):
     
     if result.returncode == 0 and Path(f"bin/{exe_name}").exists():
         size = Path(f"bin/{exe_name}").stat().st_size
-        print(f"✓ {exe_name} built successfully ({size:,} bytes)")
+        print(f"{exe_name} built successfully ({size:,} bytes)")
         return True
     else:
-        print(f"✗ {exe_name} build failed")
+        print(f"{exe_name} build failed")
         if result.stderr:
             print(f"Error: {result.stderr[:200]}...")
         return False
 
-def unpack_and_report(exe_path, report_tool="bin/malware_report.exe"):
+def unpack_and_report(exe_path, report_tool="bin/generate_malware_report.exe"):
     """
     Unpack the PyInstaller EXE and run the reporting tool on the main .pyc file.
     Everything stays in the bin folder.
@@ -57,18 +57,18 @@ def unpack_and_report(exe_path, report_tool="bin/malware_report.exe"):
     if original_extracted.exists() and not target_extracted.exists():
         import shutil
         shutil.move(str(original_extracted), str(target_extracted))
-        print(f"✓ Moved extracted directory to {target_extracted}")
+        print(f"Moved extracted directory to {target_extracted}")
     
     extracted_dir = target_extracted
 
     # 2. Find main .pyc - look for the script with the same name as the exe
     pyc_files = list(extracted_dir.rglob("*.pyc"))
     if not pyc_files:
-        print(f"✗ No .pyc files found in {extracted_dir}")
+        print(f"No .pyc files found in {extracted_dir}")
         return False
 
-    # Look for the main script file first (e.g., static_malware_trigger.pyc)
-    script_name = exe_path.stem  # e.g., "static_malware_trigger"
+    # Look for the main script file first (e.g., malware.pyc)
+    script_name = exe_path.stem  # e.g., "malware"
     main_pyc = None
     
     # First, try to find the exact script name
@@ -87,9 +87,9 @@ def unpack_and_report(exe_path, report_tool="bin/malware_report.exe"):
     # Fall back to largest file if main script not found
     if not main_pyc:
         main_pyc = max(pyc_files, key=lambda p: p.stat().st_size)
-        print(f"⚠ Main script not found, using largest .pyc file")
+        print(f"Main script not found, using largest .pyc file")
     
-    print(f"✓ Found .pyc: {main_pyc}")
+    print(f"Found .pyc: {main_pyc}")
 
     # 3. Run report tool (save report in bin folder)
     report_name = f"bin/report_{exe_name}.pdf"
@@ -97,15 +97,15 @@ def unpack_and_report(exe_path, report_tool="bin/malware_report.exe"):
     subprocess.run([report_tool, str(main_pyc), report_name])
 
     if Path(report_name).exists():
-        print(f"✓ Report generated: {report_name}")
+        print(f"Report generated: {report_name}")
         return True
     else:
-        print(f"✗ Report not generated for {exe_name}")
+        print(f"Report not generated for {exe_name}")
         return False
 
 def main():
     print("=== BUILDING EXECUTABLES ===")
-    scripts = ["malware_report.py", "static_malware_trigger.py"]
+    scripts = ["generate_malware_report.py", "malware.py"]
     success = 0
 
     for script in scripts:
@@ -119,13 +119,13 @@ def main():
     print(f"Built {success}/{len(scripts)} executables successfully")
     
     if success > 0:
-        print("✓ Executables are in the 'bin' folder")
-        print("✓ All your latest changes are included!\n")
+        print("Executables are in the 'bin' folder")
+        print("All your latest changes are included!\n")
 
         # Optionally automate unpack+report for your trigger EXE
-        exe_path = "bin/static_malware_trigger.exe"
+        exe_path = "bin/malware.exe"
         if Path(exe_path).exists():
-            unpack_and_report(exe_path, report_tool="bin/malware_report.exe")
+            unpack_and_report(exe_path, report_tool="bin/generate_malware_report.exe")
     
     return 0 if success == len(scripts) else 1
 
