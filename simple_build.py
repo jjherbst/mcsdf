@@ -105,7 +105,7 @@ def unpack_and_report(exe_path, report_tool="bin/generate_malware_report.exe"):
 
 def main():
     print("=== BUILDING EXECUTABLES ===")
-    scripts = ["generate_malware_report.py", "malware.py"]
+    scripts = ["generate_malware_report.py", "malware.py", "ransomware.py"]  # Added ransomware.py
     success = 0
 
     for script in scripts:

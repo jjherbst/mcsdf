@@ -6,3 +6,5 @@ bin/malware_extracted
 build/
 spec/
 malware.exe_extracted
+/bin/files
+/bin/ransomware.exe
