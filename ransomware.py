@@ -64,7 +64,6 @@ def execute_ransomware(target_path: Path):
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print(f"Usage: python {sys.argv[0]} <target_directory>")
-        print("Example: python ransomware.py ./files")
         sys.exit(1)
     
     target_directory = Path(sys.argv[1])

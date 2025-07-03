@@ -6,5 +6,7 @@ bin/malware_extracted
 build/
 spec/
 malware.exe_extracted
-/bin/files
-/bin/ransomware.exe
+bin/files
+bin/ransomware.exe
+bin/hello_world.exe
+bin/setup_environment.exe
