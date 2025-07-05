@@ -10,3 +10,6 @@ bin/files
 bin/ransomware.exe
 bin/hello_world.exe
 bin/setup_environment.exe
+bin/malware.pyc
+bin/metamorphic_ransomware.exe
+bin/polymorphic_ransomware.exe
