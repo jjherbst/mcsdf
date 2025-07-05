@@ -13,3 +13,5 @@ bin/setup_environment.exe
 bin/malware.pyc
 bin/metamorphic_ransomware.exe
 bin/polymorphic_ransomware.exe
+bin/build_ransomware_environment.exe
+bin/malware_report.exe

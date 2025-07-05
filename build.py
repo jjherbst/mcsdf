@@ -32,7 +32,11 @@ def build_exe(script_name):
     else:
         print(f"{exe_name} build failed")
         if result.stderr:
-            print(f"Error: {result.stderr[:200]}...")
+            print("--- PyInstaller Error Output ---")
+            print(result.stderr)
+        if result.stdout:
+            print("--- PyInstaller Standard Output ---")
+            print(result.stdout)
         return False
 
 def unpack_and_report(exe_path, report_tool="bin/generate_malware_report.exe"):
@@ -105,12 +109,22 @@ def unpack_and_report(exe_path, report_tool="bin/generate_malware_report.exe"):
 
 def main():
     print("=== BUILDING EXECUTABLES ===")
-    scripts = ["generate_malware_report.py", "malware.py", "ransomware.py","setup_environment.py", "hello_world.py", "polymorphic_ransomware.py", "metamorphic_ransomware.py"]  # Added ransomware.py
+    # Use absolute paths to scripts in the malware directory
+    malware_dir = Path("malware")
+    reporting_dir = Path("reporting")
+    scripts = [
+        malware_dir / "malware.py",
+        malware_dir / "polymorphic_ransomware.py",
+        malware_dir / "metamorphic_ransomware.py",
+        malware_dir / "ransomware.py",
+        malware_dir / "build_ransomware_environment.py",
+        reporting_dir / "malware_report.py"
+    ]
     success = 0
 
     for script in scripts:
-        if Path(script).exists():
-            if build_exe(script):
+        if script.exists():
+            if build_exe(str(script)):
                 success += 1
         else:
             print(f"✗ {script} not found")
