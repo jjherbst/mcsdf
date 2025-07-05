@@ -128,6 +128,8 @@ def extract_pyc_from_exe(exe_path):
                 print(f"[DEBUG]   ✓ {item.name}")
             else:
                 print(f"[DEBUG]   {item.name}")
+        
+        return main_pyc_dest  # IMPORTANT: Return the path to the copied .pyc file
     else:
         print(f"[DEBUG] ✗ ERROR: {main_pyc_dest} was not created!")
         print(f"[DEBUG] bin_dir contents after failed copy:")
@@ -135,48 +137,14 @@ def extract_pyc_from_exe(exe_path):
             print(f"[DEBUG]   {item.name}")
         return None
 
-def generate_report_for_pyc(pyc_path, report_tool="bin/malware_report.exe"):
-    """
-    Generate a report for the given .pyc file
-    """
-    pyc_path = Path(pyc_path)
-    exe_name = pyc_path.with_suffix('.exe').name
-    report_name = pyc_path.parent / f"{exe_name}.pdf"
-    
-    print(f"Generating report for {pyc_path.name}...")
-    report_tool_path = Path(report_tool)
-    
-    if not report_tool_path.exists():
-        print(f"ERROR: Report tool not found: {report_tool_path}")
-        return False
-    
-    if report_tool_path.suffix == ".py":
-        cmd = [sys.executable, str(report_tool_path), str(pyc_path), str(report_name)]
-    else:
-        cmd = [str(report_tool_path), str(pyc_path), str(report_name)]
-    
-    try:
-        result = subprocess.run(cmd, capture_output=True, text=True, check=True)
-        if Path(report_name).exists():
-            print(f"✓ Report generated: {report_name}")
-            return True
-        else:
-            print(f"ERROR: Report not generated for {pyc_path.name}")
-            return False
-    except subprocess.CalledProcessError as e:
-        print(f"ERROR running report tool: {e}")
-        if e.stdout:
-            print("STDOUT:", e.stdout)
-        if e.stderr:
-            print("STDERR:", e.stderr)
-        return False
+
 
 def main():
     malware_dir = Path("malware")
     reporting_dir = Path("reporting")
     
     scripts = [
-        reporting_dir / "malware_report.py",
+        # reporting_dir / "malware_report.py",  # Excluded - use Python script directly
         malware_dir / "malware.py",
         malware_dir / "polymorphic_ransomware.py",
         malware_dir / "metamorphic_ransomware.py",
@@ -223,33 +191,25 @@ def main():
     
     print(f"\nPhase 2 Results: Extracted {extract_success}/{len(built_exes)} .pyc files")
     
-    # PHASE 3: Generate reports for all extracted .pyc files
-    print("\n=== PHASE 3: GENERATING REPORTS ===")
-    report_success = 0
-    
-    # First, ensure we have the report tool
-    report_tool = Path("bin/malware_report.exe")
-    if not report_tool.exists():
-        print(f"WARNING: Report tool {report_tool} not found. Skipping report generation.")
-        print("Make sure malware_report.py was built successfully in Phase 1.")
-    else:
-        for pyc_path in extracted_pycs:
-            if generate_report_for_pyc(pyc_path, str(report_tool)):
-                report_success += 1
-            else:
-                print(f"✗ Failed to generate report for {pyc_path.name}")
-    
-    print(f"\nPhase 3 Results: Generated {report_success}/{len(extracted_pycs)} reports")
-    
     # FINAL RESULTS
     print(f"\n=== FINAL RESULTS ===")
     print(f"Built: {build_success}/{len(scripts)} executables")
     print(f"Extracted: {extract_success}/{len(built_exes)} .pyc files")
-    print(f"Reports: {report_success}/{len(extracted_pycs)} generated")
     
     if build_success > 0:
         print("Executables are in the 'bin' folder")
         print("All your latest changes are included!")
+    
+    # Show extracted .pyc files
+    if extract_success > 0:
+        print(f"\n[DEBUG] Extracted .pyc files in bin folder:")
+        bin_dir = Path("bin")
+        pyc_files = list(bin_dir.glob("*.pyc"))
+        for pyc in pyc_files:
+            size = pyc.stat().st_size
+            print(f"[DEBUG]   ✓ {pyc.name} ({size} bytes)")
+        if not pyc_files:
+            print(f"[DEBUG]   No .pyc files found in {bin_dir}")
     
     # Return 0 only if all phases completed successfully
     total_expected = len([s for s in scripts if s.exists()])
