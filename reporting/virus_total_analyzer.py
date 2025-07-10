@@ -1,12 +1,27 @@
+"""
+VirusTotal Intelligence Analyzer - Professional integration system for 
+VirusTotal v3 API providing comprehensive threat intelligence analysis, 
+MITRE ATT&CK mapping, and automated malware detection using official 
+vt-py library for academic cybersecurity research and threat assessment.
+"""
 import hashlib
 from pathlib import Path
 from typing import Dict, Optional
 import vt
 
 class VirusTotalAnalyzer:
+    """
+    description: Professional VirusTotal API integration system for comprehensive malware threat intelligence and analysis
+    parameters: None (class definition)
+    returns: VirusTotalAnalyzer instance with methods for file analysis, MITRE ATT&CK extraction, and threat intelligence
+    """
     @staticmethod
     def extract_mitre_attack(vt_attrs: dict) -> list:
-        """Extract MITRE ATT&CK techniques from VirusTotal attributes."""
+        """
+        description: Extracts MITRE ATT&CK techniques and tactics from VirusTotal analysis attributes for threat mapping
+        parameters: vt_attrs (dict) - VirusTotal file attributes containing crowdsourced attack technique information
+        returns: list of dictionaries containing MITRE ATT&CK technique details, tactics, and framework information
+        """
         if not vt_attrs or not isinstance(vt_attrs, dict):
             return []
         mitre = vt_attrs.get("crowdsourced_attack_techniques", [])
@@ -31,7 +46,11 @@ class VirusTotalAnalyzer:
 
     @staticmethod
     def extract_summary_attributes(vt_attrs: dict) -> dict:
-        """Extract key VirusTotal v3 attributes for summary reporting."""
+        """
+        description: Extracts key VirusTotal v3 API attributes for summary reporting and threat intelligence overview
+        parameters: vt_attrs (dict) - VirusTotal file attributes containing comprehensive analysis metadata
+        returns: dict containing formatted summary attributes including hashes, file info, and detection metadata
+        """
         if not vt_attrs or not isinstance(vt_attrs, dict):
             return {}
         def safe_join(val, limit=5):
@@ -68,12 +87,21 @@ class VirusTotalAnalyzer:
             "FileCondis": vt_attrs.get("filecondis"),
             "Total Votes": vt_attrs.get("total_votes"),
         }
-    """VirusTotal analyzer using the official vt-py library."""
+
     def __init__(self, api_key: str):
+        """
+        description: Initializes VirusTotal analyzer with API key validation for secure threat intelligence access
+        parameters: api_key (str) - VirusTotal API key for authentication and API access authorization
+        returns: None, configures analyzer instance with validated API credentials for malware analysis
+        """
         self.api_key = api_key
 
     def _validate_api_key(self, api_key: str) -> bool:
-        """Validate VirusTotal API key format."""
+        """
+        description: Validates VirusTotal API key format and structure for proper authentication and access control
+        parameters: api_key (str) - API key string to validate for format compliance and security requirements
+        returns: bool indicating whether API key meets VirusTotal format requirements for valid authentication
+        """
         if not api_key:
             return False
         # VirusTotal API keys are typically 64 hexadecimal characters
@@ -86,7 +114,11 @@ class VirusTotalAnalyzer:
         return True
 
     async def analyze_file(self, file_path: Path) -> Optional[Dict]:
-        """Analyze a file with VirusTotal using the official library."""
+        """
+        description: Performs comprehensive VirusTotal analysis on file including upload, scan, and detailed report retrieval
+        parameters: file_path (Path) - path to file for VirusTotal analysis and threat intelligence gathering
+        returns: Optional[Dict] containing complete VirusTotal analysis results or None if analysis fails
+        """
         try:
             print(f" Connecting to VirusTotal...")
             async with vt.Client(self.api_key) as client:
@@ -134,7 +166,11 @@ class VirusTotalAnalyzer:
             return None
 
     def _calculate_sha256(self, file_path: Path) -> str:
-        """Calculate SHA-256 hash of a file."""
+        """
+        description: Calculates SHA-256 cryptographic hash of file for VirusTotal identification and integrity verification
+        parameters: file_path (Path) - path to file for hash calculation and unique identification
+        returns: str containing hexadecimal SHA-256 hash for file identification and VirusTotal lookup
+        """
         sha256_hash = hashlib.sha256()
         with open(file_path, "rb") as f:
             for chunk in iter(lambda: f.read(4096), b""):
@@ -142,7 +178,11 @@ class VirusTotalAnalyzer:
         return sha256_hash.hexdigest()
 
     def _convert_vt_object_to_dict(self, vt_obj) -> Dict:
-        """Convert VirusTotal object to dictionary format."""
+        """
+        description: Converts VirusTotal API object to dictionary format for consistent data processing and report generation
+        parameters: vt_obj - VirusTotal API response object containing analysis results and file attributes
+        returns: Dict containing structured VirusTotal data with standardized format for report processing
+        """
         result = {
             "data": {
                 "id": vt_obj.id,

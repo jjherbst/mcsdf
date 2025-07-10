@@ -1,10 +1,25 @@
 
+"""
+Professional PDF Report Generator - Advanced PDF creation system for 
+malware analysis reports with dynamic sections, formatted tables, and 
+professional styling designed for academic cybersecurity research and 
+comprehensive threat intelligence documentation.
+"""
 from fpdf import FPDF
 from datetime import datetime as dt
 
 class MalwareAnalysisReport(FPDF):
+    """
+    description: Professional PDF report generator for malware analysis with dynamic sections and formatted output
+    parameters: None (inherits from FPDF)
+    returns: MalwareAnalysisReport instance with comprehensive PDF generation capabilities for malware research
+    """
     def mitre_attack_table(self, mitre_list):
-        """Display MITRE ATT&CK techniques in a formatted table or list."""
+        """
+        description: Displays MITRE ATT&CK techniques in formatted table with technique IDs, tactics, and descriptions
+        parameters: mitre_list (List[Dict]) - list of MITRE ATT&CK technique dictionaries with technique details
+        returns: None, adds formatted MITRE ATT&CK table to PDF report for threat intelligence analysis
+        """
         if not mitre_list:
             self.highlight_text("No MITRE ATT&CK techniques reported by VirusTotal.")
             return
@@ -35,6 +50,11 @@ class MalwareAnalysisReport(FPDF):
         self.ln(2)
 
     def __init__(self):
+        """
+        description: Initializes PDF report with professional settings, margins, and metadata for malware analysis documentation
+        parameters: None
+        returns: None, configures PDF document properties and page layout for academic report generation
+        """
         super().__init__()
         self.set_auto_page_break(auto=True, margin=16)
         self.set_margins(18, 20, 18)
@@ -46,7 +66,11 @@ class MalwareAnalysisReport(FPDF):
         self._section_first_pages = set()  
 
     def virustotal_summary_table(self, summary_dict):
-        """Display a summary table of VirusTotal v3 attributes (pre-extracted)."""
+        """
+        description: Displays VirusTotal v3 API summary attributes in formatted table for threat intelligence overview
+        parameters: summary_dict (Dict) - dictionary containing pre-extracted VirusTotal summary attributes and metadata
+        returns: None, adds formatted VirusTotal summary table to PDF report for external intelligence analysis
+        """
         if not summary_dict or not isinstance(summary_dict, dict):
             self.highlight_text("No VirusTotal summary data available.")
             return
@@ -58,10 +82,19 @@ class MalwareAnalysisReport(FPDF):
         self.value_table(info_dict)
 
     def set_section(self, section_name):
-        """Set the current section for dynamic headers."""
+        """
+        description: Sets current report section for dynamic header generation and document organization
+        parameters: section_name (str) - name of the current section for header and navigation purposes
+        returns: None, updates internal section state for dynamic PDF formatting and organization
+        """
         self.current_section = section_name
 
     def header(self):
+        """
+        description: Generates dynamic page headers based on current section with professional styling and branding
+        parameters: None
+        returns: None, adds section-specific headers to PDF pages for document navigation and organization
+        """
         # Subtle header: 
         if self.page_no() == 1:
             return
@@ -84,7 +117,11 @@ class MalwareAnalysisReport(FPDF):
         self.ln(1)
 
     def footer(self):
-        """Professional footer with page numbers."""
+        """
+        description: Generates professional footer with page numbers and academic copyright information
+        parameters: None
+        returns: None, adds consistent footer styling to all PDF pages for professional presentation
+        """
         if self.page_no() == 1:
             return
         self.set_y(-15)
@@ -94,7 +131,11 @@ class MalwareAnalysisReport(FPDF):
         self.cell(0, 8, f"Page {self.page_no()}   © {current_year} Academic Research - MCSDF", align="C")
 
     def section_title(self, title, subtitle=None):
-        """Add a section title with optional subtitle (standard, not centered on every page)."""
+        """
+        description: Adds formatted section titles with optional subtitles for document organization and readability
+        parameters: title (str) - main section title text, subtitle (Optional[str]) - optional descriptive subtitle
+        returns: None, adds professionally styled section headings to PDF for content organization
+        """
         if hasattr(self, '_section_separator_pages') and self.page_no() in self._section_separator_pages:
             return
         if hasattr(self, '_pages_with_section_title'):
@@ -114,7 +155,11 @@ class MalwareAnalysisReport(FPDF):
         self.set_font("Helvetica", "", 10)
 
     def add_main_section_separator(self, section_title, section_subtitle=None):
-        """Add a major section separator: triggers a new page, sets the section, and adds a section name in the body (not header)."""
+        """
+        description: Creates major section separator page with centered title and professional styling for document structure
+        parameters: section_title (str) - main section title, section_subtitle (Optional[str]) - optional section description
+        returns: None, adds new page with centered section separator for major report divisions
+        """
         if "MCSDF" in section_title or "Static" in section_title:
             self.set_section("MCSDF Static Analysis")
         elif "VirusTotal" in section_title:
@@ -152,7 +197,11 @@ class MalwareAnalysisReport(FPDF):
         self.set_line_width(0.2)
 
     def value_table(self, info_dict):
-        """Display key-value pairs in a formatted table."""
+        """
+        description: Displays key-value pairs in formatted table layout for structured information presentation
+        parameters: info_dict (Dict) - dictionary containing key-value pairs for tabular display
+        returns: None, adds formatted table to PDF with keys and corresponding values for data presentation
+        """
         self.set_text_color(0, 0, 0)
         self.set_font("Helvetica", "", 10)
         for key, value in info_dict.items():
@@ -167,7 +216,11 @@ class MalwareAnalysisReport(FPDF):
         self.ln(2)
 
     def highlight_text(self, text, color=(240, 247, 255)):
-        """Add highlighted text block."""
+        """
+        description: Adds highlighted text blocks with colored background for emphasis and important information
+        parameters: text (str) - text content to highlight, color (Tuple[int, int, int]) - RGB background color values
+        returns: None, adds highlighted text block to PDF with specified background color for visual emphasis
+        """
         self.set_fill_color(*color)
         self.set_font("Helvetica", "I", 10)
         self.multi_cell(0, 7, text, fill=True)
@@ -176,7 +229,11 @@ class MalwareAnalysisReport(FPDF):
         self.ln(2)  # Consistent spacing
 
     def item_list(self, items, color=(0, 0, 0)):
-        """Display bullet-point list with custom color."""
+        """
+        description: Displays bullet-point list with custom text color for organized information presentation
+        parameters: items (List[str]) - list of items to display as bullets, color (Tuple[int, int, int]) - RGB text color
+        returns: None, adds formatted bullet-point list to PDF with specified text color for content organization
+        """
         self.set_font("Helvetica", "", 10)
         self.set_text_color(*color)
         for item in items:
@@ -188,7 +245,11 @@ class MalwareAnalysisReport(FPDF):
         self.ln(2)
 
     def detection_table(self, scan_results):
-        """Add VirusTotal detection results table."""
+        """
+        description: Creates formatted table of VirusTotal antivirus detection results with color-coded status indicators
+        parameters: scan_results (Dict) - dictionary containing antivirus engine results and detection details
+        returns: None, adds comprehensive detection results table to PDF with color-coded threat indicators
+        """
         if not scan_results or not isinstance(scan_results, dict):
             self.highlight_text("No VirusTotal scan results available")
             return
@@ -227,7 +288,11 @@ class MalwareAnalysisReport(FPDF):
             self.highlight_text(f"Showing first 20 results. Total engines: {len(scan_results)}")
 
     def ascii_strings_table(self, ascii_strings, columns=3, max_strings=100):
-        """Display ASCII strings in a multi-column table format."""
+        """
+        description: Displays extracted ASCII strings in multi-column table format for malware string analysis
+        parameters: ascii_strings (List[str]) - extracted strings from binary, columns (int) - table columns, max_strings (int) - maximum strings to display
+        returns: None, adds formatted multi-column string table to PDF for comprehensive string analysis presentation
+        """
         display_strings = (
             ascii_strings[:max_strings]
             if len(ascii_strings) > max_strings
@@ -255,7 +320,11 @@ class MalwareAnalysisReport(FPDF):
             )
 
     def add_cover_page(self, file_name: str, analysis_date: str):
-        """Add a professional cover page to the report."""
+        """
+        description: Creates professional cover page with title, file information, and academic branding for report presentation
+        parameters: file_name (str) - name of analyzed malware file, analysis_date (str) - date of analysis execution
+        returns: None, adds formatted cover page to PDF with academic information and professional styling
+        """
         self.add_page()
         self.set_font("Helvetica", "B", 24)
         self.set_text_color(0, 0, 0)
@@ -295,7 +364,11 @@ class MalwareAnalysisReport(FPDF):
         self.set_text_color(0, 0, 0)
 
     def add_page(self, orientation='', size='', same=False):
-        """Override add_page to manage section separator flag."""
+        """
+        description: Overrides FPDF add_page method to manage section separator flags and page state tracking
+        parameters: orientation (str) - page orientation, size (str) - page size, same (bool) - same page settings flag
+        returns: None, adds new page while maintaining section separator state for proper document formatting
+        """
         super().add_page(orientation, size, same)
         # Reset separator flag for all new pages EXCEPT when we're in add_main_section_separator
         if not hasattr(self, '_adding_separator') or not self._adding_separator:
