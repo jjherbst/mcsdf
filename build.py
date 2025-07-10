@@ -1,9 +1,19 @@
+"""
+Automated Malware Build System - Comprehensive build automation tool that 
+compiles Python malware simulations into executables using PyInstaller and 
+extracts bytecode for static analysis, designed for academic cybersecurity 
+research and malware detection system testing environments.
+"""
 import subprocess
 from pathlib import Path
 import sys
 
 def build_exe(script_name):
-    """Build executable with clean cache"""
+    """
+    description: Builds standalone executable from Python script using PyInstaller with optimized settings for malware simulation
+    parameters: script_name (str) - path to Python script file for compilation into standalone executable
+    returns: bool indicating successful executable creation and verification in bin directory
+    """
     script_path = Path(script_name)
     exe_name = script_path.stem + '.exe'  # Just the filename, not the full path
     print(f"Building {exe_name}...")
@@ -38,7 +48,9 @@ def build_exe(script_name):
 
 def extract_pyc_from_exe(exe_path):
     """
-    Extract .pyc file from PyInstaller EXE using pyinstxtractor.py
+    description: Extracts Python bytecode (.pyc) files from PyInstaller executables using pyinstxtractor for static analysis
+    parameters: exe_path (Path or str) - path to PyInstaller executable for bytecode extraction and analysis preparation
+    returns: Path to extracted .pyc file in bin directory or None if extraction fails or file not found
     """
     exe_path = Path(exe_path)
     exe_name = exe_path.name
@@ -140,6 +152,11 @@ def extract_pyc_from_exe(exe_path):
 
 
 def main():
+    """
+    description: Main orchestration function that automates complete build process for malware simulation suite
+    parameters: None
+    returns: int exit code (0 for complete success, 1 for partial or complete failure) indicating build process status
+    """
     malware_dir = Path("malware")
     reporting_dir = Path("reporting")
     
