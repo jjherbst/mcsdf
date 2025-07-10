@@ -26,3 +26,4 @@ bin/polymorphic_ransomware.pyc
 bin/ransomware.exe_extracted/
 bin/ransomware.pyc
 malware/helloWorld/
+generated-metamorphic/
